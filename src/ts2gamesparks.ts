@@ -297,7 +297,16 @@ preEmitDiagnostics.forEach(diagnostic => {
 			prefixStyle = colors.red;
 		}
 
-    console.log(`${prefixStyle(prefix)} ${diagnostic.messageText}`);
+		const lineMap = (diagnostic.file as any).lineMap;
+
+		let line=0;
+		while (lineMap[line] <= diagnostic.start) {
+				line++
+		}
+
+		let col = diagnostic.start - lineMap[line-1] + 1;
+
+    console.log(`${prefixStyle(prefix)} ${diagnostic.messageText} (${path.relative(process.cwd(), diagnostic.file.fileName)}:${line}:${col})`);
 });
 
 if (preEmitDiagnostics.length > 0) {
