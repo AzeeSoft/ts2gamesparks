@@ -1,6 +1,6 @@
 ## Install
 ```
-npm install --save-dev git+https://github.com/johnsoncodehk/ts2gamesparks.git
+npm install --save-dev git+https://github.com/AzeeSoft/ts2gamesparks.git
 ```
 
 ## Update to last commit
@@ -12,6 +12,3 @@ npm update
 ```
 ts2gs
 ```
-
-## Example
-https://github.com/johnsoncodehk/gamesparks-cloud-code-typescript-example
