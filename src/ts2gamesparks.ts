@@ -44,7 +44,7 @@ function getLanguageService(tsConfig: ts.ParsedCommandLine) {
 	// Create the language service files
 	return ts.createLanguageService(servicesHost, ts.createDocumentRegistry());
 }
-function buildFile(tsConfig: ts.ParsedCommandLine, services: ts.LanguageService, filePath: string) {
+function buildFile(tsConfig: ts.ParsedCommandLine, services: ts.LanguageService, filePath: string, index?: number) {
 
 	interface RenameInfo {
 		renameLocation: ts.RenameLocation,
@@ -106,6 +106,9 @@ function buildFile(tsConfig: ts.ParsedCommandLine, services: ts.LanguageService,
 		}
 		return updateTsSourceFileFromText(tsSourceFile);
 	}
+
+	let curFileCounter = (index !== undefined) ? ` (${index+1} of ${tsConfig.fileNames.length})` : '';
+	console.log(`Building File${curFileCounter}: ${filePath}`);
 
 	let fileName = path.basename(filePath, ".ts");
 	let sourceCode = fs.readFileSync(filePath, encoding);
@@ -269,8 +272,15 @@ function buildFile(tsConfig: ts.ParsedCommandLine, services: ts.LanguageService,
 	});
 }
 
+console.log();
+console.log("Initializing TS to Cloud Code Transpilation...");
+
 let tsConfig = getTsConfig();
 let services = getLanguageService(tsConfig);
+
+
+console.log("Generating Diagnostics...");
+console.log();
 
 let compilerDiagnostics = services.getCompilerOptionsDiagnostics();
 assert(compilerDiagnostics.length == 0, compilerDiagnostics.length > 0 ? compilerDiagnostics[0].messageText.toString() : "");
@@ -280,12 +290,30 @@ let program = ts.createProgram(tsConfig.fileNames, tsConfig.options);
 
 let preEmitDiagnostics = ts.getPreEmitDiagnostics(program);
 preEmitDiagnostics.forEach(diagnostic => {
-    console.log(`${colors.red(`${diagnostic.category.toString()}:`)} ${diagnostic.messageText}`);
+		let prefix = `${ts.DiagnosticCategory[diagnostic.category]} (${diagnostic.code}):`;
+
+		let prefixStyle = colors.yellow;
+		if (diagnostic.category == ts.DiagnosticCategory.Error) {
+			prefixStyle = colors.red;
+		}
+
+    console.log(`${prefixStyle(prefix)} ${diagnostic.messageText}`);
 });
+
+if (preEmitDiagnostics.length > 0) {
+		console.log();
+		assert(false, "Error transpiling to Cloud Code. Please fix the errors displayed above!");
+}
+
+console.log("Passed Diagnostics! No errors found!");
+console.log();
+console.log("Commencing transpilation...");
 console.log();
 
-assert(preEmitDiagnostics.length == 0, "Error transpiling to Cloud Code. Please fix the errors!");
-
-tsConfig.fileNames.forEach(file => {
-	buildFile(tsConfig, services, file);
+tsConfig.fileNames.forEach((file, index) => {
+	buildFile(tsConfig, services, file, index);
 });
+
+console.log();
+console.log(colors.green("TS to Cloud Code Transpilation Successful!"));
+console.log();
