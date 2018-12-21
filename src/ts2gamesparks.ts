@@ -108,7 +108,7 @@ function buildFile(tsConfig: ts.ParsedCommandLine, services: ts.LanguageService,
 	}
 
 	let curFileCounter = (index !== undefined) ? ` (${index+1} of ${tsConfig.fileNames.length})` : '';
-	console.log(`Building File${curFileCounter}: ${filePath}`);
+	console.log(`Building File${curFileCounter}: ${path.relative(process.cwd(), filePath)}`);
 
 	let fileName = path.basename(filePath, ".ts");
 	let sourceCode = fs.readFileSync(filePath, encoding);
