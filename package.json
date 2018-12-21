@@ -7,7 +7,9 @@
     "@types/node": "latest",
     "@types/mkdirp": "latest"
   },
-  "scripts": {},
+  "scripts": {
+    "tsc-watch": "tsc --watch -p src/"
+  },
   "author": "",
   "bin": {
     "ts2gs": "./bin/js2gs.js"
