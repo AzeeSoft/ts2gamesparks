@@ -3,6 +3,7 @@ import * as fs from "fs";
 import * as path from "path";
 import * as mkdirp from "mkdirp";
 import * as assert from "assert";
+import * as colors from 'colors/safe';
 
 const encoding = "utf8";
 const moduleKeyword = "module_";
@@ -271,8 +272,19 @@ function buildFile(tsConfig: ts.ParsedCommandLine, services: ts.LanguageService,
 let tsConfig = getTsConfig();
 let services = getLanguageService(tsConfig);
 
-let diagnostics = services.getCompilerOptionsDiagnostics();
-assert(diagnostics.length == 0, diagnostics.length > 0 ? diagnostics[0].messageText.toString() : "");
+let compilerDiagnostics = services.getCompilerOptionsDiagnostics();
+assert(compilerDiagnostics.length == 0, compilerDiagnostics.length > 0 ? compilerDiagnostics[0].messageText.toString() : "");
+
+let program = ts.createProgram(tsConfig.fileNames, tsConfig.options);
+// let emitResult = program.emit(); //  Not caring about emitResult Diagnostics for now
+
+let preEmitDiagnostics = ts.getPreEmitDiagnostics(program);
+preEmitDiagnostics.forEach(diagnostic => {
+    console.log(`${colors.red(`${diagnostic.category.toString()}:`)} ${diagnostic.messageText}`);
+});
+console.log();
+
+assert(preEmitDiagnostics.length == 0, "Error transpiling to Cloud Code. Please fix the errors!");
 
 tsConfig.fileNames.forEach(file => {
 	buildFile(tsConfig, services, file);
