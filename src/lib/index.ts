@@ -33,7 +33,7 @@ class Builder {
 		this.services = getLanguageService(this.tsConfig, dir);
 	}
 
-	performDiagnosticChecks() {
+	performDiagnosticChecks(): boolean {
 		console.log("Generating Diagnostics...");
 		console.log();
 
@@ -67,12 +67,15 @@ class Builder {
 		if (preEmitDiagnostics.length > 0) {
 				console.log();
 				assert(false, "Error transpiling to Cloud Code. Please fix the errors displayed above!");
+				return false;
 		}
 
 		console.log("Passed Diagnostics! No errors found!");
 		console.log();
 		console.log("Commencing transpilation...");
 		console.log();
+
+		return true;
 	}
 
 	buildAllFiles() {
@@ -110,7 +113,7 @@ function emit(dir: string, options: Options, tsConfig: ts.ParsedCommandLine, ser
 	const js = convert(dir, options, tsConfig, services, fileName);
 	const output = services.getEmitOutput(fileName);
 
-	if (startIndex !== undefined) {
+	if (startIndex === undefined) {
 		startIndex = 0;
 	}
 

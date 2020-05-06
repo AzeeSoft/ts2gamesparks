@@ -3,6 +3,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var ts2gs = require("../lib");
 var yargs = require("yargs");
+var colors = require("colors/safe");
 var options = yargs
     .option("init", { alias: "i" })
     .option("useRequireOnce", { boolean: true })
@@ -14,6 +15,10 @@ else {
     console.log();
     console.log("Initializing TS to Cloud Code Transpilation...");
     var builder = ts2gs.createBuilder(process.cwd(), options);
-    builder.performDiagnosticChecks();
-    builder.buildAllFiles();
+    if (builder.performDiagnosticChecks()) {
+        builder.buildAllFiles();
+        console.log();
+        console.log(colors.green("TS to Cloud Code Transpilation Successful!"));
+        console.log();
+    }
 }

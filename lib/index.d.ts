@@ -10,7 +10,7 @@ declare class Builder {
     tsConfig: ts.ParsedCommandLine;
     services: ts.LanguageService;
     constructor(dir: string, options?: Options);
-    performDiagnosticChecks(): void;
+    performDiagnosticChecks(): boolean;
     buildAllFiles(): void;
     buildFile(fileName: string): void;
     buildJs(fileName: string): string;
