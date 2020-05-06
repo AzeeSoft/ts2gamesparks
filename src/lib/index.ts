@@ -76,9 +76,10 @@ class Builder {
 	}
 
 	buildAllFiles() {
-		this.tsConfig.fileNames.forEach((fileName, index) => {
-			emit(this.dir, this.options, this.tsConfig, this.services, fileName, index);
-		});
+		let startIndex = 0;
+		for (const fileName of this.tsConfig.fileNames) {
+			startIndex += emit(this.dir, this.options, this.tsConfig, this.services, fileName, startIndex);
+		}
 	}
 
 	buildFile(fileName: string) {
@@ -105,13 +106,15 @@ class Builder {
 	}
 }
 
-function emit(dir: string, options: Options, tsConfig: ts.ParsedCommandLine, services: ts.LanguageService, fileName: string, index?: number) {
-	let curFileCounter = (index !== undefined) ? ` (${index+1} of ${tsConfig.fileNames.length})` : '';
-	console.log(`Building File${curFileCounter}: ${path.relative(process.cwd(), fileName)}`);
-
+function emit(dir: string, options: Options, tsConfig: ts.ParsedCommandLine, services: ts.LanguageService, fileName: string, startIndex?: number) {
 	const js = convert(dir, options, tsConfig, services, fileName);
 	const output = services.getEmitOutput(fileName);
 
+	if (startIndex !== undefined) {
+		startIndex = 0;
+	}
+
+	let localCounter = 0;
 	for (const o of output.outputFiles) {
 		/**
 		 * @example
@@ -128,8 +131,14 @@ function emit(dir: string, options: Options, tsConfig: ts.ParsedCommandLine, ser
 
 		fs.mkdirpSync(path.dirname(jsPath));
 		fs.writeFileSync(jsPath, js, options.encoding);
-		console.log(path.relative(dir, fileName) + " => " + path.relative(dir, jsPath))
+
+		let curFileCounter = ` (${startIndex + localCounter + 1})`;
+		console.log(`Building${curFileCounter}: ` + path.relative(dir, fileName) + " => " + path.relative(dir, jsPath))
+
+		localCounter++;
 	}
+
+	return localCounter;
 }
 
 function convert(dir: string, options: Options, tsConfig: ts.ParsedCommandLine, services: ts.LanguageService, fileName: string) {
