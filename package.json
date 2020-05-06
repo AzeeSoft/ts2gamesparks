@@ -1,23 +1,31 @@
 {
   "name": "ts2gamesparks",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "",
-  "main": "./lib/ts2gamesparks.js",
+  "main": "./lib/index.js",
   "devDependencies": {
+    "@types/fs-extra": "latest",
+    "@types/mocha": "latest",
     "@types/node": "latest",
-    "@types/mkdirp": "latest"
+    "@types/yargs": "latest",
+    "mocha": "latest"
   },
   "scripts": {
-    "tsc-watch": "tsc --watch -p src/"
+    "tsc": "cd src && tsc -w",
+    "tsc-watch": "tsc --watch -p src/",
+    "test": "mocha"
   },
   "author": "",
   "bin": {
-    "ts2gs": "./bin/js2gs.js"
+    "ts2gs": "./bin/ts2gs.js"
   },
   "license": "ISC",
   "dependencies": {
     "colors": "^1.3.3",
+    "fs-extra": "latest",
     "mkdirp": "latest",
-    "typescript": "latest"
+    "typescript": "latest",
+    "upath": "^1.2.0",
+    "yargs": "latest"
   }
 }
