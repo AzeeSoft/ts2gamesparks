@@ -1,6 +1,6 @@
 import * as ts from "typescript";
 import * as fs from "fs-extra";
-import * as path from "path";
+import * as path from "upath";
 
 export function getTsConfig(dir: string) {
     const file = ts.findConfigFile(dir, ts.sys.fileExists) as string;

@@ -1,6 +1,6 @@
 import * as ts from "typescript";
 import * as fs from "fs-extra";
-import * as path from "path";
+import * as path from "upath";
 import * as assert from "assert";
 import * as colors from 'colors/safe';
 import { getTsConfig, getLanguageService } from "./ts-extra";

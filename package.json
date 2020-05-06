@@ -22,9 +22,10 @@
   "license": "ISC",
   "dependencies": {
     "colors": "^1.3.3",
+    "fs-extra": "latest",
     "mkdirp": "latest",
     "typescript": "latest",
-    "fs-extra": "latest",
+    "upath": "^1.2.0",
     "yargs": "latest"
   }
 }
