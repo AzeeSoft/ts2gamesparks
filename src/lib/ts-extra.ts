@@ -6,6 +6,11 @@ export function getTsConfig(dir: string) {
     const file = ts.findConfigFile(dir, ts.sys.fileExists) as string;
     const config = ts.readJsonConfigFile(file, ts.sys.readFile);
     const content = ts.parseJsonSourceFileConfigFileContent(config, ts.sys, path.dirname(file));
+
+    content.fileNames.forEach((fileName, index) => {
+        content.fileNames[index] = fileName.replace('\\', '/');
+    });
+
     return content;
 }
 export function getLanguageService(tsConfig: ts.ParsedCommandLine, dir: string) {

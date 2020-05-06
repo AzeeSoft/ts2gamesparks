@@ -27,7 +27,7 @@ class Builder {
 	services: ts.LanguageService;
 
 	constructor(dir: string, options: Options = {}) {
-		this.dir = dir;
+		this.dir = dir.replace('\\', '/');
 		this.options = options;
 		this.tsConfig = getTsConfig(dir);
 		this.services = getLanguageService(this.tsConfig, dir);
